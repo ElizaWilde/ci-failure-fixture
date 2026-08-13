@@ -1,0 +1,31 @@
+name: Failing CI Fixture
+
+on:
+  workflow_dispatch:
+
+jobs:
+  system-tests:
+    name: System Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Emit system-test failure
+        shell: bash
+        run: |
+          echo "Starting system tests"
+          echo "ERROR: container network setup timed out" >&2
+          echo "failed test: TestContainerNetworkReconnect" >&2
+          exit 1
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Emit integration-test failure
+        shell: bash
+        run: |
+          echo "Starting integration tests"
+          echo "ERROR: expected exit code 0, received 125" >&2
+          echo "failed test: TestPodmanRunIntegration" >&2
+          exit 1
