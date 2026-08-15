@@ -4,6 +4,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  network-failure:
+    name: Network Failure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Simulate registry network failure
+        shell: bash
+        run: |
+          echo "Starting container image pull"
+          echo "Pulling quay.io/example/test-image:latest"
+          echo "Error: initializing source docker://quay.io/example/test-image:latest" >&2
+          echo "Get \"https://quay.io/v2/\": dial tcp: lookup quay.io: temporary failure in name resolution" >&2
+          echo "podman pull failed with exit code 125" >&2
+          exit 1
   storage-failure:
     name: Storage Failure
     runs-on: ubuntu-latest
