@@ -1,31 +1,45 @@
-name: Failing CI Fixture
+name: CI Fixture
 
 on:
   workflow_dispatch:
 
 jobs:
-  system-tests:
-    name: System Tests
+  storage-failure:
+    name: Storage Failure
     runs-on: ubuntu-latest
 
     steps:
-      - name: Emit system-test failure
+      - name: Simulate storage exhaustion
         shell: bash
         run: |
-          echo "Starting system tests"
-          echo "ERROR: container network setup timed out" >&2
-          echo "failed test: TestContainerNetworkReconnect" >&2
+          echo "Starting storage test"
+          echo "Writing image layer to /var/lib/containers/storage"
+          echo "Error: write /var/lib/containers/storage/overlay/layer: no space left on device" >&2
+          echo "podman image pull failed with exit code 125" >&2
           exit 1
 
-  integration-tests:
-    name: Integration Tests
+  unknown-failure:
+    name: Unknown Failure
     runs-on: ubuntu-latest
 
     steps:
-      - name: Emit integration-test failure
+      - name: Simulate an unrecognized failure
         shell: bash
         run: |
-          echo "Starting integration tests"
-          echo "ERROR: expected exit code 0, received 125" >&2
-          echo "failed test: TestPodmanRunIntegration" >&2
+          echo "Starting integration test"
+          echo "Processing fixture 84f28a"
+          echo "Unexpected state transition: ALPHA_7 -> VOID_19" >&2
+          echo "Internal operation rejected with code ZX-481" >&2
           exit 1
+
+  successful-job:
+    name: Successful Job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Complete successfully
+        shell: bash
+        run: |
+          echo "Starting successful test"
+          echo "All checks passed"
+          exit 0
